@@ -1,0 +1,16 @@
+{
+  "name": "Maxim Fleet Intelligence Hub",
+  "supportEmail": "dhruvthakar@zenduit.com",
+  "version": "1.0.0",
+  "items": [
+    {
+      "url": "index.html",
+      "path": "ActivityLink/",
+      "menuName": {
+        "en": "Fleet Intelligence Hub"
+      },
+      "icon": "assets/icon.svg"
+    }
+  ],
+  "isSigned": false
+}

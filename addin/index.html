@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maxim Fleet Intelligence Hub</title>
+  <meta name="description" content="MyGeotab Add-In — leasing intelligence for Maxim Truck & Trailer: utilization, maintenance, lifecycle and financial insight from Geotab telematics.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ================= Top navigation ================= -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="Maxim Fleet Intelligence Hub">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span class="brand-text">
+          <span class="brand-name">MAXIM</span>
+          <span class="brand-sub">Fleet Intelligence Hub</span>
+        </span>
+        <span class="brand-chip">MyGeotab Add-In</span>
+      </a>
+
+      <nav class="topnav" aria-label="Sections">
+        <a href="#overview">Overview</a>
+        <a href="#utilization">Utilization</a>
+        <a href="#maintenance">Maintenance</a>
+        <a href="#lifecycle">Lifecycle</a>
+        <a href="#financial">Financial</a>
+        <a href="#data">Data</a>
+        <a href="#recommendations">Recommendations</a>
+        <a href="#discovery">Integrations</a>
+      </nav>
+
+      <div class="topbar-tools">
+        <div class="search-wrap">
+          <input id="search" class="search" type="search" placeholder="Search unit, customer, class…" autocomplete="off" aria-label="Search vehicles">
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button type="button" id="btn-refresh" class="tool-btn" title="Refresh data">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15"/></svg>
+          <span>Refresh</span>
+        </button>
+        <button type="button" id="btn-export" class="tool-btn" title="Export fleet report (CSV)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+          <span>Export</span>
+        </button>
+        <button type="button" id="btn-theme" class="tool-btn tool-icon" aria-label="Switch theme"></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= Filter bar ================= -->
+  <div class="filterbar" role="group" aria-label="Fleet filters">
+    <div class="filterbar-inner">
+      <span class="filter-label">Portfolio scope</span>
+      <select id="f-region" class="input" data-filter="region" aria-label="Filter by branch"></select>
+      <select id="f-class" class="input" data-filter="assetClass" aria-label="Filter by asset class"></select>
+      <select id="f-status" class="input" data-filter="status" aria-label="Filter by status"></select>
+      <button type="button" id="f-clear" class="btn btn-sm btn-ghost">Clear</button>
+      <span id="filter-count" class="filter-count" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <main id="top">
+
+    <!-- ================= Hero: executive command deck ================= -->
+    <section class="hero" aria-label="Executive summary">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <p class="hero-eyebrow">Executive fleet summary · national leasing portfolio</p>
+          <p id="hero-narrative" class="hero-narrative">Loading portfolio…</p>
+          <p id="hero-meta" class="hero-meta"></p>
+        </div>
+        <div id="hero-stats" class="hero-stats"></div>
+      </div>
+      <div class="hero-lane" aria-hidden="true"></div>
+    </section>
+
+    <!-- ================= Fleet KPIs ================= -->
+    <section class="section" id="overview">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Fleet KPIs</p>
+          <h2>Portfolio at a glance</h2>
+          <p class="section-desc">Live counters from Device, Trip and StatusData feeds. Click a card to drill into the underlying vehicles.</p>
+        </div>
+      </header>
+      <div id="kpi-grid" class="kpi-grid"></div>
+    </section>
+
+    <!-- ================= Utilization intelligence ================= -->
+    <section class="section" id="utilization">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Operational insight</p>
+          <h2>Utilization intelligence</h2>
+          <p class="section-desc">Which leased assets earn their keep — and which lease dollars are attached to parked equipment.</p>
+        </div>
+        <button type="button" class="btn btn-sm btn-ghost" data-export-section="utilization">Export CSV</button>
+      </header>
+      <div class="grid">
+        <div class="card col-5">
+          <div class="card-head"><h3>Fleet segmentation</h3><span class="card-sub">30-day utilization bands · click a band to drill down</span></div>
+          <div id="util-bands"></div>
+          <div id="util-callout" class="callout"></div>
+        </div>
+        <div class="card col-7">
+          <div class="card-head"><h3>Utilization heatmap</h3><span class="card-sub">Average weekly utilization by asset class, trailing 12 weeks</span></div>
+          <div id="util-heatmap"></div>
+        </div>
+        <div class="card col-6">
+          <div class="card-head"><h3>Most utilized assets</h3><span class="card-sub">Redeployment donors when demand spikes</span></div>
+          <div id="util-top"></div>
+        </div>
+        <div class="card col-6">
+          <div class="card-head"><h3>Under-utilized assets</h3><span class="card-sub">Right-sizing and redistribution candidates</span></div>
+          <div id="util-under"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Maintenance intelligence ================= -->
+    <section class="section" id="maintenance">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Asset health</p>
+          <h2>Maintenance intelligence</h2>
+          <p class="section-desc">Fault feeds, PM pipeline and cost trends — spot the units burning money before the next breakdown does it for you.</p>
+        </div>
+        <button type="button" class="btn btn-sm btn-ghost" data-export-section="maintenance">Export CSV</button>
+      </header>
+      <div id="maint-stats" class="stat-row"></div>
+      <div class="grid">
+        <div class="card col-7">
+          <div class="card-head"><h3>Maintenance spend trend</h3><span class="card-sub">Fleet-wide, trailing 12 months</span></div>
+          <div id="maint-trend"></div>
+        </div>
+        <div class="card col-5">
+          <div class="card-head"><h3>Downtime by asset class</h3><span class="card-sub">Days out of service, last 90 days</span></div>
+          <div id="maint-downtime"></div>
+        </div>
+        <div class="card col-5">
+          <div class="card-head"><h3>Open fault alerts</h3><span class="card-sub">Highest severity first · from FaultData feed</span></div>
+          <div id="maint-alerts"></div>
+        </div>
+        <div class="card col-7">
+          <div class="card-head"><h3>High maintenance-cost vehicles</h3><span class="card-sub">YTD spend, trend and repeat failures · click a row for detail</span></div>
+          <div id="maint-cost-table"></div>
+          <div id="maint-callout" class="callout"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Lifecycle intelligence ================= -->
+    <section class="section" id="lifecycle">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Asset strategy</p>
+          <h2>Lifecycle intelligence</h2>
+          <p class="section-desc">A composite lifecycle score — age, duty, maintenance economics, downtime and condition — timing every replacement before it becomes a failure.</p>
+        </div>
+        <button type="button" class="btn btn-sm btn-ghost" data-export-section="lifecycle">Export CSV</button>
+      </header>
+      <div class="grid">
+        <div class="card col-5">
+          <div class="card-head"><h3>Fleet health distribution</h3><span class="card-sub">Lifecycle score bands · click a band to drill down</span></div>
+          <div id="life-score" class="life-score"></div>
+          <div id="life-bands"></div>
+        </div>
+        <div class="card col-7">
+          <div class="card-head"><h3>Replacement runway</h3><span class="card-sub">Units forecast to cross the replacement threshold, next 8 quarters · est. capex per quarter</span></div>
+          <div id="life-runway"></div>
+        </div>
+        <div class="card col-12">
+          <div class="card-head"><h3>Replacement candidates</h3><span class="card-sub">Lowest lifecycle scores first · click a row for the full asset picture</span></div>
+          <div id="life-candidates"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Financial intelligence ================= -->
+    <section class="section" id="financial">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Portfolio economics</p>
+          <h2>Financial intelligence</h2>
+          <p class="section-desc">Telematics-verified operating economics: what each kilometre really costs, and where replacement beats repair.</p>
+        </div>
+        <button type="button" class="btn btn-sm btn-ghost" data-export-section="financial">Export CSV</button>
+      </header>
+      <div id="fin-stats" class="stat-row"></div>
+      <div class="grid">
+        <div class="card col-5">
+          <div class="card-head"><h3>TCO composition</h3><span class="card-sub">Estimated annual total cost of operation</span></div>
+          <div id="fin-comp"></div>
+          <div id="fin-callout" class="callout"></div>
+        </div>
+        <div class="card col-7">
+          <div class="card-head"><h3>Cost per kilometre by class</h3><span class="card-sub">All-in: lease + maintenance + fuel</span></div>
+          <div id="fin-costkm"></div>
+        </div>
+        <div class="card col-12">
+          <div class="card-head"><h3>Replacement ROI opportunities</h3><span class="card-sub">Where a new unit out-earns the repair bill</span></div>
+          <div id="fin-roi"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Geotab data showcase ================= -->
+    <section class="section" id="data">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Telematics catalogue</p>
+          <h2>What Geotab already knows about this fleet</h2>
+          <p class="section-desc">Every category below is flowing today. The value is in the third line: the action each one can trigger for a leasing business.</p>
+        </div>
+      </header>
+      <div id="data-grid" class="data-grid"></div>
+    </section>
+
+    <!-- ================= AI recommendations ================= -->
+    <section class="section" id="recommendations">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Advisory engine</p>
+          <h2>Recommendations</h2>
+          <p class="section-desc">Generated from the current portfolio state — every figure traces back to the sections above.</p>
+        </div>
+      </header>
+      <div id="reco-grid" class="reco-grid"></div>
+    </section>
+
+    <!-- ================= Action Center ================= -->
+    <section class="section" id="actions">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Workflow</p>
+          <h2>Action Center</h2>
+          <p class="section-desc">Every insight ends in an action. Queued actions sync to Maxim's CRM, maintenance and lease systems once integrated.</p>
+        </div>
+      </header>
+      <div class="grid">
+        <div class="card col-5">
+          <div class="card-head"><h3>Quick actions</h3></div>
+          <div id="action-quick" class="action-grid"></div>
+        </div>
+        <div class="card col-7">
+          <div class="card-head"><h3>Action queue</h3><span class="card-sub">This session</span></div>
+          <div id="action-queue"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Integration Discovery Center ================= -->
+    <section class="section" id="discovery">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Systems discovery</p>
+          <h2>Integration Discovery Center</h2>
+          <p class="section-desc">Tell us what Maxim runs today. Each connected system compounds the intelligence above — profile it here and export the result for the integration roadmap.</p>
+        </div>
+      </header>
+      <div class="disc-meter card">
+        <div class="disc-meter-bar"><div id="disc-meter-fill" class="disc-meter-fill"></div></div>
+        <span id="disc-meter-text" class="disc-meter-text"></span>
+        <button type="button" id="disc-export" class="btn">Export integration profile</button>
+      </div>
+      <div id="discovery-groups" class="disc-grid"></div>
+    </section>
+
+    <!-- ================= Customer industry templates ================= -->
+    <section class="section" id="industries">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Growth playbook</p>
+          <h2>Add-in opportunities for Maxim's customers</h2>
+          <p class="section-desc">The same telematics foundation, packaged per vertical — advisory products Maxim can take to every leasing account.</p>
+        </div>
+      </header>
+      <div id="industry-grid" class="industry-grid"></div>
+    </section>
+
+    <footer class="footer">
+      <p><strong>Maxim Fleet Intelligence Hub</strong> — concept showcase built on the MyGeotab Add-In framework.
+      All vehicles, customers and figures are generated sample data simulating a national leasing portfolio.
+      Service layer, insight engine and UI are production-pattern and ready to point at live Geotab feeds.</p>
+    </footer>
+  </main>
+
+  <!-- Loading overlay -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader-box"><span class="spinner"></span> Querying Geotab service layer…</div>
+  </div>
+
+  <!-- Scripts: order matters (namespace modules, no bundler required) -->
+  <script src="js/data-generator.js"></script>
+  <script src="js/geotab-service.js"></script>
+  <script src="js/insights.js"></script>
+  <script src="js/recommendations.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/integrations.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#d22730"/>
+  <text x="16" y="23" text-anchor="middle" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-size="20" font-weight="700" fill="#ffffff">M</text>
+  <path d="M6 27h20" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.5" stroke-dasharray="3 2.5"/>
+</svg>
