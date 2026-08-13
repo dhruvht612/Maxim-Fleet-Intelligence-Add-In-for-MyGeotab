@@ -14,10 +14,10 @@ service layer, so pointing it at a live MyGeotab database is a drop-in change.
 
 No build step, no dependencies.
 
-- **Standalone:** open `addin/index.html` in a browser (or serve the folder:
-  `npx serve addin`). The app detects there is no MyGeotab host and boots in mock mode.
-- **Inside MyGeotab:** host the `addin/` folder (HTTPS), then register the add-in under
-  *Administration → System → System Settings → Add-Ins* using `addin/config.json`
+- **Standalone:** open `index.html` in a browser (or serve the folder:
+  `npx serve .`). The app detects there is no MyGeotab host and boots in mock mode.
+- **Inside MyGeotab:** host this folder (HTTPS), then register the add-in under
+  *Administration → System → System Settings → Add-Ins* using `config.json`
   (point the item `url` at the hosted `index.html`). The framework injects the
   authenticated `api` object and the same code runs against live data.
 
@@ -40,20 +40,19 @@ No build step, no dependencies.
 ## Architecture
 
 ```
-addin/
-  index.html            Shell + section scaffolding
-  config.json           MyGeotab add-in manifest
-  css/styles.css        Design system (light + dark themes)
-  js/
-    data-generator.js   Seeded 500-unit sample portfolio
-    geotab-service.js   ONLY Geotab access point (Authenticate/Get/Call + domain methods)
-    insights.js         Insight engine — pure functions: raw data → intelligence model
-    recommendations.js  Recommendation engine + action registry
-    ui.js               Component & chart kit (dependency-free inline SVG)
-    dashboard.js        Section renderers, vehicle modal, drill-down drawers
-    integrations.js     Data showcase, discovery center, industry templates
-    app.js              Bootstrap, filters/search/theme, MyGeotab lifecycle
-  assets/icon.svg
+index.html            Shell + section scaffolding
+config.json           MyGeotab add-in manifest
+css/styles.css        Design system (light + dark themes)
+js/
+  data-generator.js   Seeded 500-unit sample portfolio
+  geotab-service.js   ONLY Geotab access point (Authenticate/Get/Call + domain methods)
+  insights.js         Insight engine — pure functions: raw data → intelligence model
+  recommendations.js  Recommendation engine + action registry
+  ui.js               Component & chart kit (dependency-free inline SVG)
+  dashboard.js        Section renderers, vehicle modal, drill-down drawers
+  integrations.js     Data showcase, discovery center, industry templates
+  app.js              Bootstrap, filters/search/theme, MyGeotab lifecycle
+assets/icon.svg
 ```
 
 **Going live:** replace `loadPortfolio()`'s generator call with the real `Get`
