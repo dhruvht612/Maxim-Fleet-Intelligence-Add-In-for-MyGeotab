@@ -1,16 +1,16 @@
 {
-  "name": "Maxim Fleet Intelligence Hub",
-  "supportEmail": "dhruvthakar@zenduit.com",
-  "version": "1.0.0",
-  "items": [
-    {
-      "url": "index.html",
-      "path": "ActivityLink/",
-      "menuName": {
-        "en": "Fleet Intelligence Hub"
-      },
-      "icon": "assets/icon.svg"
-    }
-  ],
-  "isSigned": false
+  
+    "name": "Maxim Fleet Intelligence Hub",
+    "supportEmail": "dhruvthakar@zenduit.com",
+    "version": "1.0",
+    "items": [
+        {
+            "url": "https://maxim-fleet-intelligence-add-in-for.vercel.app/index.html",
+            "path": "/",
+            "menuName": {
+                "en": "Fleet Intelligence Hub"
+            }
+        }
+    ]
 }
+
