@@ -44,14 +44,26 @@
      * ------------------------------------------------------------------ */
 
     /**
-     * Authenticate against a MyGeotab server.
-     * Live: `api.authenticate` / JSON-RPC `Authenticate`.
+     * Establish the working session.
+     * Live: the api object MyGeotab injects into `initialize()` is already
+     * authenticated for the signed-in user — there is no credential login to
+     * perform. `api.getSession` captures the session details instead.
      * Mock: resolves a fake session for the demo database.
      */
     async authenticate(server, database, userName, password) {
       if (this.live) {
-        return new Promise((resolve, reject) =>
-          this.api.authenticate(resolve, reject, server, database, userName, password));
+        return new Promise((resolve, reject) => {
+          try {
+            this.api.getSession((credentials, srv) => {
+              // Older MyGeotab passes (credentials, server); newer passes a
+              // single session object that already includes the server.
+              this.session = Object.assign({ server: srv }, credentials);
+              resolve(this.session);
+            });
+          } catch (err) {
+            reject(err);
+          }
+        });
       }
       await this._latency();
       this.session = {

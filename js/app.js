@@ -41,11 +41,17 @@
   async function loadData(newSeed) {
     document.body.classList.add('is-loading');
     if (newSeed !== undefined) state.seed = newSeed;
-    await Maxim.service.authenticate();
-    state.portfolio = await Maxim.service.loadPortfolio(newSeed);
-    buildFilterOptions();
-    applyFilters(true);
-    document.body.classList.remove('is-loading');
+    try {
+      await Maxim.service.authenticate();
+      state.portfolio = await Maxim.service.loadPortfolio(newSeed);
+      buildFilterOptions();
+      applyFilters(true);
+    } catch (err) {
+      console.error('Maxim Fleet Intelligence: data load failed', err);
+      Maxim.UI.toast('Could not load fleet data from the Geotab service layer', 'warn');
+    } finally {
+      document.body.classList.remove('is-loading');
+    }
   }
 
   /** Re-run the insight engine against the current filter set and repaint. */
@@ -258,11 +264,15 @@
 
   if (window.geotab && window.geotab.addin) {
     // Running inside MyGeotab: the framework injects the authenticated api.
-    window.geotab.addin.maximFleetIntelligence = function () {
+    const addinFactory = function () {
       return {
         /** Called once when MyGeotab loads the add-in. */
         initialize(api, pageState, ready) {
-          boot(api).then(ready);
+          // Always release MyGeotab's loading state, even if boot fails —
+          // otherwise the page stays blurred behind its spinner forever.
+          boot(api)
+            .catch((err) => console.error('Maxim Fleet Intelligence: initialize failed', err))
+            .then(ready);
         },
         /** Called every time the user navigates to the add-in. */
         focus() { /* re-query on focus in live mode if data is stale */ },
@@ -270,6 +280,10 @@
         blur() { /* release timers/feeds here in live mode */ }
       };
     };
+    // MyGeotab resolves the entry point from the camelCased add-in name in
+    // config.json ("Maxim Fleet Intelligence Hub"); keep the legacy key too.
+    window.geotab.addin.maximFleetIntelligenceHub = addinFactory;
+    window.geotab.addin.maximFleetIntelligence = addinFactory;
   } else {
     // Standalone showcase: boot in mock mode.
     document.addEventListener('DOMContentLoaded', () => boot(null));
