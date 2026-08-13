@@ -1,16 +1,15 @@
 {
-  
-    "name": "Maxim Fleet Intelligence Hub",
-    "supportEmail": "dhruvthakar@zenduit.com",
-    "version": "1.0",
-    "items": [
-        {
-            "url": "https://maxim-fleet-intelligence-add-in-for.vercel.app/index.html",
-            "path": "/",
-            "menuName": {
-                "en": "Fleet Intelligence Hub"
-            }
-        }
-    ]
+  "name": "Maxim Fleet Intelligence Hub",
+  "supportEmail": "dhruvthakar@zenduit.com",
+  "version": "1.0",
+  "items": [
+      {
+          "url": "https://maxim-fleet-intelligence-add-in-for.vercel.app/index.html",
+          "path": "/",
+          "menuName": {
+              "en": "Fleet Intelligence Hub"
+          }
+      }
+  ]
 }
 
